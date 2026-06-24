@@ -1,0 +1,1120 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #061018;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        color: #f4f8fb;
+      }
+
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 18% 18%, rgba(56, 216, 255, 0.18), rgba(6, 16, 24, 0) 30%),
+          radial-gradient(circle at 84% 74%, rgba(247, 185, 85, 0.12), rgba(6, 16, 24, 0) 33%),
+          #061018;
+      }
+
+      .grid-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        opacity: 0.38;
+        background-image:
+          linear-gradient(rgba(56, 216, 255, 0.11) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(56, 216, 255, 0.1) 1px, transparent 1px);
+        background-size: 80px 80px;
+        mask-image: radial-gradient(circle at center, black 0%, transparent 78%);
+      }
+
+      .scanline {
+        position: absolute;
+        left: -12%;
+        top: 0;
+        width: 20%;
+        height: 100%;
+        z-index: 1;
+        opacity: 0.28;
+        background: linear-gradient(90deg, transparent, rgba(56, 216, 255, 0.34), transparent);
+        transform: skewX(-18deg);
+      }
+
+      .scene {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        overflow: hidden;
+      }
+
+      .scene-content {
+        width: 100%;
+        height: 100%;
+        padding: 86px 112px;
+        display: flex;
+        flex-direction: column;
+        gap: 34px;
+      }
+
+      .layout-two {
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 56px;
+        align-items: center;
+        height: 100%;
+      }
+
+      .layout-two.wide-left {
+        grid-template-columns: 1.08fr 0.92fr;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        width: fit-content;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        border: 1px solid rgba(56, 216, 255, 0.32);
+        border-radius: 999px;
+        color: #38d8ff;
+        background: rgba(13, 31, 47, 0.58);
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .eyebrow-dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #4ce0a8;
+        box-shadow: 0 0 22px rgba(76, 224, 168, 0.85);
+      }
+
+      h1,
+      h2 {
+        letter-spacing: 0;
+        line-height: 1.06;
+        font-weight: 900;
+      }
+
+      h1 {
+        max-width: 940px;
+        font-size: 98px;
+      }
+
+      h2 {
+        max-width: 900px;
+        font-size: 72px;
+      }
+
+      .lead {
+        max-width: 910px;
+        color: #b7c8d9;
+        font-size: 31px;
+        line-height: 1.55;
+        font-weight: 650;
+      }
+
+      .accent {
+        color: #38d8ff;
+      }
+
+      .amber {
+        color: #f7b955;
+      }
+
+      .green {
+        color: #4ce0a8;
+      }
+
+      .glass {
+        background: rgba(13, 31, 47, 0.78);
+        border: 1px solid rgba(159, 179, 200, 0.18);
+        border-radius: 28px;
+        box-shadow:
+          0 40px 120px rgba(0, 0, 0, 0.34),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+      }
+
+      .story-map {
+        min-height: 760px;
+        padding: 34px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 24px;
+      }
+
+      .story-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand-lock {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 28px;
+        font-weight: 900;
+      }
+
+      .mark {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        color: #f4f8fb;
+        background: #061018;
+        border: 1px solid rgba(56, 216, 255, 0.72);
+        box-shadow: 0 0 38px rgba(56, 216, 255, 0.36);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .day-pill {
+        font-family: "JetBrains Mono", monospace;
+        color: #4ce0a8;
+        font-size: 18px;
+      }
+
+      .hub-ring {
+        position: relative;
+        min-height: 430px;
+        display: grid;
+        place-items: center;
+      }
+
+      .hub-core {
+        width: 270px;
+        height: 270px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        color: #061018;
+        font-size: 36px;
+        font-weight: 900;
+        background:
+          radial-gradient(circle at 36% 31%, #f4f8fb, rgba(244, 248, 251, 0) 14%),
+          radial-gradient(circle at center, #38d8ff, #1d7fff 68%, #0b1724 69%);
+        box-shadow:
+          0 0 48px rgba(56, 216, 255, 0.66),
+          0 0 140px rgba(56, 216, 255, 0.2);
+      }
+
+      .role-card {
+        position: absolute;
+        width: 230px;
+        padding: 16px 18px;
+        border-radius: 20px;
+        background: rgba(6, 16, 24, 0.78);
+        border: 1px solid rgba(56, 216, 255, 0.22);
+      }
+
+      .role-card h3 {
+        font-size: 25px;
+        margin-bottom: 6px;
+      }
+
+      .role-card p {
+        color: #9fb3c8;
+        font-size: 18px;
+        line-height: 1.35;
+      }
+
+      .role-a { left: 34px; top: 18px; }
+      .role-b { right: 18px; top: 42px; }
+      .role-c { left: 0; bottom: 44px; }
+      .role-d { right: 26px; bottom: 28px; }
+      .role-e { left: 50%; top: -4px; transform: translateX(-50%); }
+
+      .story-bottom {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+
+      .stat {
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .stat b {
+        display: block;
+        color: #f7b955;
+        font-size: 36px;
+        margin-bottom: 2px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .stat span {
+        color: #9fb3c8;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .agent-window {
+        position: relative;
+        height: 830px;
+        padding: 22px;
+        display: grid;
+        grid-template-rows: 58px minmax(0, 1fr) 94px;
+        gap: 18px;
+      }
+
+      .window-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 18px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .window-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 900;
+        color: #f4f8fb;
+        font-size: 22px;
+      }
+
+      .codex-badge {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: #061018;
+        border: 1px solid rgba(56, 216, 255, 0.65);
+        color: #f4f8fb;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .status-pill {
+        color: #4ce0a8;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 15px;
+      }
+
+      .chat-body {
+        min-height: 0;
+        padding: 20px;
+        border-radius: 24px;
+        background: rgba(6, 16, 24, 0.72);
+        border: 1px solid rgba(56, 216, 255, 0.14);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .bubble {
+        max-width: 94%;
+        padding: 13px 16px;
+        border-radius: 20px;
+        font-size: 22px;
+        line-height: 1.36;
+        color: #eef6fb;
+      }
+
+      .bubble.user {
+        align-self: flex-end;
+        background: linear-gradient(135deg, rgba(56, 216, 255, 0.26), rgba(76, 224, 168, 0.16));
+        border: 1px solid rgba(56, 216, 255, 0.36);
+      }
+
+      .bubble.agent {
+        align-self: flex-start;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .input-bar {
+        min-height: 86px;
+        padding: 18px 22px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        color: #9fb3c8;
+        font-size: 21px;
+      }
+
+      .typing-text {
+        flex: 1;
+        color: #eef8ff;
+        line-height: 1.34;
+        font-weight: 750;
+      }
+
+      .typewriter .char {
+        opacity: 0;
+        display: inline-block;
+      }
+
+      .typing-cursor {
+        width: 3px;
+        height: 34px;
+        border-radius: 99px;
+        background: #38d8ff;
+        box-shadow: 0 0 18px rgba(56, 216, 255, 0.7);
+        opacity: 0;
+      }
+
+      .send-dot {
+        flex: 0 0 auto;
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: #38d8ff;
+        box-shadow: 0 0 32px rgba(56, 216, 255, 0.45);
+      }
+
+      .result-card {
+        padding: 14px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .result-card h3 {
+        color: #f7b955;
+        font-size: 23px;
+        margin-bottom: 8px;
+      }
+
+      .insight-list {
+        display: grid;
+        gap: 7px;
+      }
+
+      .insight {
+        padding: 7px 10px;
+        border-radius: 14px;
+        background: rgba(6, 16, 24, 0.54);
+        color: #d9e9f4;
+        font-size: 17px;
+        line-height: 1.28;
+      }
+
+      .visual-grid {
+        margin-top: 8px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .viz-card {
+        min-height: 88px;
+        padding: 10px;
+        border-radius: 16px;
+        background: rgba(6, 16, 24, 0.58);
+        border: 1px solid rgba(56, 216, 255, 0.16);
+      }
+
+      .viz-card.wide {
+        grid-column: 1 / -1;
+      }
+
+      .viz-title {
+        color: #9fb3c8;
+        font-size: 14px;
+        font-weight: 800;
+        margin-bottom: 7px;
+      }
+
+      .bar-chart {
+        height: 48px;
+        display: flex;
+        align-items: end;
+        gap: 8px;
+      }
+
+      .bar {
+        flex: 1;
+        min-width: 18px;
+        border-radius: 8px 8px 3px 3px;
+        background: linear-gradient(180deg, #38d8ff, rgba(56, 216, 255, 0.22));
+        box-shadow: 0 0 20px rgba(56, 216, 255, 0.22);
+        transform-origin: bottom center;
+      }
+
+      .bar.amber {
+        background: linear-gradient(180deg, #f7b955, rgba(247, 185, 85, 0.22));
+      }
+
+      .trend-svg {
+        width: 100%;
+        height: 52px;
+        display: block;
+      }
+
+      .trend-line {
+        fill: none;
+        stroke: #4ce0a8;
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        filter: drop-shadow(0 0 7px rgba(76, 224, 168, 0.35));
+      }
+
+      .trend-line.amber-line {
+        stroke: #f7b955;
+      }
+
+      .dot {
+        fill: #38d8ff;
+      }
+
+      .gantt {
+        display: grid;
+        gap: 7px;
+      }
+
+      .gantt-row {
+        display: grid;
+        grid-template-columns: 84px 1fr;
+        gap: 10px;
+        align-items: center;
+        color: #d9e9f4;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .gantt-track {
+        height: 13px;
+        border-radius: 99px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+
+      .gantt-bar {
+        height: 100%;
+        border-radius: 99px;
+        background: linear-gradient(90deg, #38d8ff, #4ce0a8);
+        transform-origin: left center;
+      }
+
+      .automation-card {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border-radius: 18px;
+        background: rgba(76, 224, 168, 0.08);
+        border: 1px solid rgba(76, 224, 168, 0.22);
+      }
+
+      .clock {
+        width: 42px;
+        height: 42px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        color: #f4f8fb;
+        background: #061018;
+        border: 1px solid rgba(76, 224, 168, 0.72);
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 900;
+        font-size: 12px;
+      }
+
+      .automation-card b {
+        display: block;
+        color: #f4f8fb;
+        font-size: 17px;
+        margin-bottom: 2px;
+      }
+
+      .automation-card span {
+        color: #b7c8d9;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .tool-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .tool-chip {
+        padding: 9px 12px;
+        border-radius: 999px;
+        background: rgba(56, 216, 255, 0.12);
+        color: #9eeaff;
+        border: 1px solid rgba(56, 216, 255, 0.25);
+        font-size: 16px;
+        font-weight: 800;
+      }
+
+      .profile-card {
+        padding: 32px;
+        border-radius: 28px;
+      }
+
+      .person-line {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 24px;
+      }
+
+      .avatar {
+        width: 76px;
+        height: 76px;
+        border-radius: 24px;
+        display: grid;
+        place-items: center;
+        color: #f4f8fb;
+        background: #061018;
+        border: 1px solid rgba(76, 224, 168, 0.72);
+        box-shadow: 0 0 30px rgba(76, 224, 168, 0.18);
+        font-size: 30px;
+        font-weight: 900;
+      }
+
+      .person-line h3 {
+        font-size: 36px;
+        margin-bottom: 2px;
+      }
+
+      .person-line p {
+        color: #9fb3c8;
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .day-card {
+        display: grid;
+        gap: 14px;
+      }
+
+      .day-item {
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(6, 16, 24, 0.58);
+        border: 1px solid rgba(56, 216, 255, 0.15);
+      }
+
+      .day-item b {
+        display: block;
+        color: #f4f8fb;
+        font-size: 25px;
+        margin-bottom: 4px;
+      }
+
+      .day-item span {
+        color: #b7c8d9;
+        font-size: 20px;
+        line-height: 1.35;
+      }
+
+      .transition-wipe {
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        background:
+          linear-gradient(105deg, rgba(6, 16, 24, 0) 0%, rgba(56, 216, 255, 0.08) 24%, rgba(56, 216, 255, 0.94) 48%, rgba(247, 185, 85, 0.82) 56%, rgba(6, 16, 24, 0) 82%),
+          rgba(6, 16, 24, 0.18);
+        transform: translateX(-115%);
+      }
+
+      .final-stack {
+        display: grid;
+        grid-template-columns: 1fr 0.82fr;
+        gap: 60px;
+        align-items: center;
+        height: 100%;
+      }
+
+      .final-list {
+        display: grid;
+        gap: 18px;
+        margin-top: 24px;
+      }
+
+      .final-item {
+        padding: 22px 24px;
+        border-radius: 22px;
+        background: rgba(13, 31, 47, 0.78);
+        border: 1px solid rgba(56, 216, 255, 0.16);
+        color: #d8e8f4;
+        font-size: 27px;
+        font-weight: 750;
+      }
+
+      .logo-lockup {
+        padding: 48px;
+        border-radius: 34px;
+        background: linear-gradient(145deg, rgba(13, 31, 47, 0.92), rgba(6, 16, 24, 0.74));
+        border: 1px solid rgba(56, 216, 255, 0.28);
+        box-shadow: 0 0 120px rgba(56, 216, 255, 0.17);
+      }
+
+      .logo-lockup .big-mark {
+        width: 112px;
+        height: 112px;
+        border-radius: 34px;
+        display: grid;
+        place-items: center;
+        margin-bottom: 32px;
+        background: #061018;
+        border: 1px solid rgba(56, 216, 255, 0.72);
+        color: #f4f8fb;
+        font-size: 46px;
+        font-weight: 900;
+      }
+
+      .logo-lockup h3 {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      .logo-lockup p {
+        color: #b7c8d9;
+        font-size: 28px;
+        line-height: 1.45;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="73.5"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div class="grid-bg" data-layout-ignore></div>
+      <div class="scanline" data-layout-ignore></div>
+
+      <section id="scene-1" class="clip scene" data-start="0" data-duration="6.5" data-track-index="1">
+        <div class="scene-content layout-two">
+          <div>
+            <div class="eyebrow s1-in"><span class="eyebrow-dot"></span> 麦家小馆 · 使用主线</div>
+            <h1 class="s1-in">一天的经营，不再从找资料开始</h1>
+            <p class="lead s1-in">老板、COO、店长、会计、新员工都继续用自己手里的通用 AI agent。企业资料中枢负责把他们需要的资料、报告和经验放在同一个地方。</p>
+          </div>
+          <div class="story-map glass s1-in">
+            <div class="story-top">
+              <div class="brand-lock"><div class="mark">AI</div><span>企业资料中枢</span></div>
+              <div class="day-pill">MAIJIA OPERATIONS</div>
+            </div>
+            <div class="hub-ring">
+              <div class="hub-core">企业<br />资料中枢</div>
+              <div class="role-card role-a"><h3>李杰</h3><p>老板看全局和异常</p></div>
+              <div class="role-card role-b"><h3>殷彤</h3><p>COO 准备运营会</p></div>
+              <div class="role-card role-c"><h3>张大岗</h3><p>店长上传门店现场</p></div>
+              <div class="role-card role-d"><h3>鲁肃</h3><p>会计核对流水和凭证</p></div>
+              <div class="role-card role-e"><h3>田亮</h3><p>新人查 SOP 和话术</p></div>
+            </div>
+            <div class="story-bottom">
+              <div class="stat"><b>5 类人</b><span>都用同一个资料底座</span></div>
+              <div class="stat"><b>1 句话</b><span>唤起资料中枢</span></div>
+              <div class="stat"><b>少问人</b><span>多拿到可复用资料</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="wipe-1" class="clip transition-wipe" data-start="6.1" data-duration="0.9" data-track-index="20"></div>
+
+      <section id="scene-2" class="clip scene" data-start="6.5" data-duration="11.5" data-track-index="1">
+        <div class="scene-content layout-two wide-left">
+          <div class="agent-window glass s2-window">
+            <div class="window-bar">
+              <div class="window-title"><span class="codex-badge">AI</span> 李杰的 Agent</div>
+              <div class="status-pill">DAILY AUTOMATION</div>
+            </div>
+            <div class="chat-body">
+              <div class="bubble user s2-user">@企业资料中枢 每天 07:30 自动推送昨晚异常和今天要盯的三件事</div>
+              <div class="bubble agent s2-agent">已创建每日自动任务。今天 07:30 会自动汇总经营数据、差评、门店事件和历史周报。</div>
+              <div class="automation-card s2-auto">
+                <div class="clock">07:30</div>
+                <div><b>每日自动执行</b><span>不用每天主动问，早上自动收到老板看板。</span></div>
+              </div>
+              <div class="result-card s2-result">
+                <h3>今日 07:30 自动推送</h3>
+                <div class="insight-list">
+                  <div class="insight">保利店：差评集中在上菜慢，建议午市前复盘出品节奏。</div>
+                  <div class="insight">苏州街店：午市销售环比下降 12%，需要看天气和团购活动。</div>
+                  <div class="insight">通州店：昨日食材验收延迟，今天重点盯供应链到货。</div>
+                </div>
+                <div class="visual-grid s2-viz">
+                  <div class="viz-card">
+                    <div class="viz-title">门店异常数</div>
+                    <div class="bar-chart s2-bars">
+                      <span class="bar" style="height: 72%"></span>
+                      <span class="bar amber" style="height: 54%"></span>
+                      <span class="bar" style="height: 38%"></span>
+                    </div>
+                  </div>
+                  <div class="viz-card">
+                    <div class="viz-title">昨晚销售趋势</div>
+                    <svg class="trend-svg" viewBox="0 0 260 80">
+                      <path class="trend-line" d="M12 56 C52 34, 78 62, 112 40 S176 24, 246 34" />
+                      <circle class="dot" cx="246" cy="34" r="6" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="input-bar s2-input">
+              <span class="typing-text typewriter s2-type">@企业资料中枢 每天 07:30 自动推送昨晚异常和今天要盯的三件事</span>
+              <span class="typing-cursor s2-cursor"></span>
+              <span class="send-dot s2-send"></span>
+            </div>
+          </div>
+          <div class="profile-card glass s2-copy">
+            <div class="person-line"><div class="avatar">李</div><div><h3>李杰</h3><p>CEO / 老板</p></div></div>
+            <h2>早上自动收到异常，不用每天主动问</h2>
+            <p class="lead">老板要的不是一堆文件名，而是每天固定收到：哪些店要盯、为什么要盯、谁去跟进。</p>
+          </div>
+        </div>
+      </section>
+
+      <div id="wipe-2" class="clip transition-wipe" data-start="17.6" data-duration="0.9" data-track-index="20"></div>
+
+      <section id="scene-3" class="clip scene" data-start="18" data-duration="12" data-track-index="1">
+        <div class="scene-content layout-two">
+          <div class="profile-card glass s3-copy">
+            <div class="person-line"><div class="avatar">殷</div><div><h3>殷彤</h3><p>COO / 运营负责人</p></div></div>
+            <h2>开会前，先把讨论材料排好</h2>
+            <p class="lead">COO 可以让 agent 从资料中枢里找周报、差评、促销记录和门店事件，直接整理成会议议题。</p>
+          </div>
+          <div class="agent-window glass s3-window">
+            <div class="window-bar">
+              <div class="window-title"><span class="codex-badge">AI</span> 殷彤的 Agent</div>
+              <div class="status-pill">MEETING PREP</div>
+            </div>
+            <div class="chat-body">
+              <div class="bubble user s3-user">@企业资料中枢 整理今天运营会要讨论的门店问题和负责人</div>
+              <div class="bubble agent s3-agent">我会按门店归并数据、差评和事件，输出会议议题。</div>
+              <div class="result-card s3-result">
+                <h3>运营会议题</h3>
+                <div class="insight-list">
+                  <div class="insight">保利店：差评处理话术复盘，负责人张大岗。</div>
+                  <div class="insight">苏州街店：团购曝光下降，负责人殷彤会后跟平台活动。</div>
+                  <div class="insight">通州店：验收延迟影响备货，负责人鲁肃核对供应商单据。</div>
+                </div>
+                <div class="visual-grid s3-viz">
+                  <div class="viz-card wide">
+                    <div class="viz-title">运营会跟进节奏</div>
+                    <div class="gantt">
+                      <div class="gantt-row"><span>差评复盘</span><div class="gantt-track"><div class="gantt-bar" style="width: 72%"></div></div></div>
+                      <div class="gantt-row"><span>平台活动</span><div class="gantt-track"><div class="gantt-bar" style="width: 54%"></div></div></div>
+                      <div class="gantt-row"><span>供应核对</span><div class="gantt-track"><div class="gantt-bar" style="width: 42%"></div></div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="input-bar s3-input">
+              <span class="typing-text typewriter s3-type">@企业资料中枢 整理今天运营会要讨论的门店问题和负责人</span>
+              <span class="typing-cursor s3-cursor"></span>
+              <span class="send-dot s3-send"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="wipe-3" class="clip transition-wipe" data-start="29.6" data-duration="0.9" data-track-index="20"></div>
+
+      <section id="scene-4" class="clip scene" data-start="30" data-duration="12" data-track-index="1">
+        <div class="scene-content layout-two wide-left">
+          <div class="agent-window glass s4-window">
+            <div class="window-bar">
+              <div class="window-title"><span class="codex-badge">AI</span> 张大岗的 Agent</div>
+              <div class="status-pill">STORE EVENT</div>
+            </div>
+            <div class="chat-body">
+              <div class="bubble user s4-user">@企业资料中枢 记录保利店今天午市出餐慢和两条差评，晚上复盘要用</div>
+              <div class="bubble agent s4-agent">已整理成经营事件，并关联今天的差评和午市订单。</div>
+              <div class="tool-row s4-tools">
+                <span class="tool-chip">保利店</span>
+                <span class="tool-chip">午市出餐</span>
+                <span class="tool-chip">差评复盘</span>
+                <span class="tool-chip">晚上会议</span>
+              </div>
+              <div class="result-card s4-result">
+                <h3>晚上复盘材料</h3>
+                <div class="insight-list">
+                  <div class="insight">问题：出餐慢集中在 12:10 到 12:45。</div>
+                  <div class="insight">建议：把热菜档口和传菜节奏分开复盘。</div>
+                </div>
+                <div class="visual-grid s4-viz">
+                  <div class="viz-card wide">
+                    <div class="viz-title">午市出餐时长趋势</div>
+                    <svg class="trend-svg" viewBox="0 0 520 86">
+                      <path class="trend-line amber-line" d="M12 60 C74 58, 122 24, 188 22 S294 70, 356 35 S444 30, 504 48" />
+                      <circle class="dot" cx="188" cy="22" r="6" />
+                      <circle class="dot" cx="356" cy="35" r="6" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="input-bar s4-input">
+              <span class="typing-text typewriter s4-type">@企业资料中枢 记录保利店今天午市出餐慢和两条差评，晚上复盘要用</span>
+              <span class="typing-cursor s4-cursor"></span>
+              <span class="send-dot s4-send"></span>
+            </div>
+          </div>
+          <div class="profile-card glass s4-copy">
+            <div class="person-line"><div class="avatar">张</div><div><h3>张大岗</h3><p>保利店店长</p></div></div>
+            <h2>门店现场发生的事，当天就沉淀</h2>
+            <p class="lead">很多数据异常不是数字本身能解释的。店长把现场事实记进去，之后周报和复盘才像懂业务的人写的。</p>
+          </div>
+        </div>
+      </section>
+
+      <div id="wipe-4" class="clip transition-wipe" data-start="41.6" data-duration="0.9" data-track-index="20"></div>
+
+      <section id="scene-5" class="clip scene" data-start="42" data-duration="12" data-track-index="1">
+        <div class="scene-content layout-two">
+          <div class="profile-card glass s5-copy">
+            <div class="person-line"><div class="avatar">鲁</div><div><h3>鲁肃</h3><p>会计 / 财务协作</p></div></div>
+            <h2>对账不再到处翻截图和 Excel</h2>
+            <p class="lead">会计可以让 agent 同时找美团导出表、供应商验收单和历史对账表，先把差异列出来。</p>
+          </div>
+          <div class="agent-window glass s5-window">
+            <div class="window-bar">
+              <div class="window-title"><span class="codex-badge">AI</span> 鲁肃的 Agent</div>
+              <div class="status-pill">FINANCE CHECK</div>
+            </div>
+            <div class="chat-body">
+              <div class="bubble user s5-user">@企业资料中枢 帮我核对保利店上周美团流水和供应商验收单，有差异先列出来</div>
+              <div class="bubble agent s5-agent">找到上周流水、验收表和历史对账模板，正在按门店和日期比对。</div>
+              <div class="result-card s5-result">
+                <h3>对账差异</h3>
+                <div class="insight-list">
+                  <div class="insight">6 月 18 日：美团流水有记录，验收单缺少签收照片。</div>
+                  <div class="insight">6 月 20 日：供应商鸡肉到货数量与验收表不一致。</div>
+                  <div class="insight">建议：会前请店长补一张验收截图。</div>
+                </div>
+                <div class="visual-grid s5-viz">
+                  <div class="viz-card">
+                    <div class="viz-title">差异金额</div>
+                    <div class="bar-chart s5-bars">
+                      <span class="bar amber" style="height: 42%"></span>
+                      <span class="bar" style="height: 64%"></span>
+                      <span class="bar amber" style="height: 78%"></span>
+                      <span class="bar" style="height: 36%"></span>
+                    </div>
+                  </div>
+                  <div class="viz-card">
+                    <div class="viz-title">凭证完整度</div>
+                    <svg class="trend-svg" viewBox="0 0 260 80">
+                      <path class="trend-line" d="M12 58 C58 46, 84 50, 120 36 S190 22, 246 18" />
+                      <circle class="dot" cx="246" cy="18" r="6" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="input-bar s5-input">
+              <span class="typing-text typewriter s5-type">@企业资料中枢 帮我核对保利店上周美团流水和供应商验收单，有差异先列出来</span>
+              <span class="typing-cursor s5-cursor"></span>
+              <span class="send-dot s5-send"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="wipe-5" class="clip transition-wipe" data-start="53.6" data-duration="0.9" data-track-index="20"></div>
+
+      <section id="scene-6" class="clip scene" data-start="54" data-duration="12" data-track-index="1">
+        <div class="scene-content layout-two wide-left">
+          <div class="agent-window glass s6-window">
+            <div class="window-bar">
+              <div class="window-title"><span class="codex-badge">AI</span> 田亮的 Agent</div>
+              <div class="status-pill">NEW EMPLOYEE</div>
+            </div>
+            <div class="chat-body">
+              <div class="bubble user s6-user">@企业资料中枢 我今天第一次去保利店值班，给我找开店 SOP 和差评处理话术</div>
+              <div class="bubble agent s6-agent">已找到保利店开店检查表、差评处理话术和最近案例。</div>
+              <div class="result-card s6-result">
+                <h3>新人值班包</h3>
+                <div class="insight-list">
+                  <div class="insight">开店 SOP：灯箱、备货、收银、外卖平台状态。</div>
+                  <div class="insight">差评话术：先道歉、确认桌号或订单、给出补救动作。</div>
+                  <div class="insight">最近案例：保利店上周两条差评的处理记录。</div>
+                </div>
+                <div class="visual-grid s6-viz">
+                  <div class="viz-card wide">
+                    <div class="viz-title">值班学习路径</div>
+                    <div class="gantt">
+                      <div class="gantt-row"><span>开店检查</span><div class="gantt-track"><div class="gantt-bar" style="width: 92%"></div></div></div>
+                      <div class="gantt-row"><span>外卖状态</span><div class="gantt-track"><div class="gantt-bar" style="width: 76%"></div></div></div>
+                      <div class="gantt-row"><span>差评话术</span><div class="gantt-track"><div class="gantt-bar" style="width: 58%"></div></div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="input-bar s6-input">
+              <span class="typing-text typewriter s6-type">@企业资料中枢 我今天第一次去保利店值班，给我找开店 SOP 和差评处理话术</span>
+              <span class="typing-cursor s6-cursor"></span>
+              <span class="send-dot s6-send"></span>
+            </div>
+          </div>
+          <div class="profile-card glass s6-copy">
+            <div class="person-line"><div class="avatar">田</div><div><h3>田亮</h3><p>新入职员工</p></div></div>
+            <h2>新人少问十遍，也能按老员工经验做事</h2>
+            <p class="lead">培训材料、会议经验、标准话术都能被 agent 找到，新人不用在群里反复问“这个以前怎么做”。</p>
+          </div>
+        </div>
+      </section>
+
+      <div id="wipe-6" class="clip transition-wipe" data-start="65.6" data-duration="0.9" data-track-index="20"></div>
+
+      <section id="scene-7" class="clip scene" data-start="66" data-duration="7.5" data-track-index="1">
+        <div class="scene-content final-stack">
+          <div>
+            <div class="eyebrow s7-in"><span class="eyebrow-dot"></span> 给老板看的最终效果</div>
+            <h2 class="s7-in">不是多上一套系统，而是让每个人的 AI 更懂这家店</h2>
+            <div class="final-list">
+              <div class="final-item s7-item">李杰少等报表：每天先看到异常和动作。</div>
+              <div class="final-item s7-item">殷彤少翻资料：运营会前自动整理议题。</div>
+              <div class="final-item s7-item">张大岗少补解释：门店事件当天沉淀。</div>
+              <div class="final-item s7-item">鲁肃少对错表：流水、验收、凭证先自动归并。</div>
+              <div class="final-item s7-item">田亮少问同事：新人也能拿到 SOP 和案例。</div>
+            </div>
+          </div>
+          <div class="logo-lockup s7-in">
+            <div class="big-mark">AI</div>
+            <h3>企业资料中枢</h3>
+            <p>让麦家小馆的资料、经验、报告和日常动作，成为每个通用 AI agent 都能使用的经营底座。</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      function splitTypewriterText(selector) {
+        document.querySelectorAll(selector).forEach((element) => {
+          const text = element.textContent.trim();
+          element.setAttribute("aria-label", text);
+          element.textContent = "";
+          Array.from(text).forEach((char) => {
+            const span = document.createElement("span");
+            span.className = "char";
+            span.textContent = char === " " ? "\u00a0" : char;
+            element.appendChild(span);
+          });
+        });
+      }
+
+      function typeAndSend(tl, prefix, start, userAt, agentAt, resultAt) {
+        tl.from(`.${prefix}-input`, { y: 22, opacity: 0, duration: 0.4, ease: "sine.out" }, start);
+        tl.to(`.${prefix}-input`, { backgroundColor: "rgba(255, 255, 255, 0.08)", duration: 0.24, ease: "sine.out" }, start + 0.18);
+        tl.fromTo(`.${prefix}-cursor`, { opacity: 0 }, { opacity: 1, duration: 0.14, ease: "none" }, start + 0.18);
+        tl.to(`.${prefix}-type .char`, { opacity: 1, duration: 0.01, stagger: 0.018, ease: "none" }, start + 0.24);
+        tl.to(`.${prefix}-cursor`, { opacity: 0.25, duration: 0.18, repeat: 4, yoyo: true, ease: "none" }, start + 0.56);
+        tl.to(`.${prefix}-send`, { scale: 1.18, duration: 0.16, repeat: 1, yoyo: true, ease: "power2.inOut" }, userAt - 0.42);
+        tl.to(`.${prefix}-cursor`, { opacity: 0, duration: 0.12, ease: "none" }, userAt - 0.24);
+        tl.to(`.${prefix}-type .char`, { opacity: 0, duration: 0.12, ease: "none" }, userAt - 0.2);
+        tl.from(`.${prefix}-user`, { y: 16, opacity: 0, duration: 0.42, ease: "power2.out" }, userAt);
+        tl.from(`.${prefix}-agent`, { y: 16, opacity: 0, duration: 0.44, ease: "power3.out" }, agentAt);
+        tl.from(`.${prefix}-result`, { y: 18, opacity: 0, duration: 0.52, ease: "expo.out" }, resultAt);
+      }
+
+      splitTypewriterText(".typewriter");
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.to(".scanline", { x: 2300, duration: 8, repeat: 9, ease: "none" }, 0);
+
+      tl.from(".s1-in", { y: 44, opacity: 0, duration: 0.72, stagger: 0.16, ease: "power3.out" }, 0.25);
+      tl.from(".hub-core", { scale: 0.78, opacity: 0, duration: 0.78, ease: "back.out(1.7)" }, 0.78);
+      tl.from(".role-card", { scale: 0.76, opacity: 0, duration: 0.5, stagger: 0.08, ease: "expo.out" }, 1.1);
+      tl.from(".stat", { y: 22, opacity: 0, duration: 0.5, stagger: 0.08, ease: "sine.out" }, 1.48);
+
+      tl.to("#wipe-1", { x: "230%", duration: 0.9, ease: "power3.inOut" }, 6.1);
+
+      tl.from(".s2-window", { x: -52, opacity: 0, duration: 0.72, ease: "power3.out" }, 6.85);
+      tl.from(".s2-copy", { y: 42, opacity: 0, duration: 0.66, ease: "circ.out" }, 7.1);
+      typeAndSend(tl, "s2", 7.7, 9.25, 9.72, 10.18);
+      tl.from(".s2-auto", { y: 18, opacity: 0, duration: 0.45, ease: "power2.out" }, 9.98);
+      tl.from(".s2-viz .viz-card", { y: 18, opacity: 0, duration: 0.45, stagger: 0.12, ease: "sine.out" }, 10.9);
+      tl.from(".s2-bars .bar", { scaleY: 0, duration: 0.65, stagger: 0.08, ease: "power3.out" }, 11.15);
+
+      tl.to("#wipe-2", { x: "230%", duration: 0.9, ease: "power3.inOut" }, 17.6);
+
+      tl.from(".s3-copy", { x: -42, opacity: 0, duration: 0.66, ease: "power3.out" }, 18.35);
+      tl.from(".s3-window", { x: 52, opacity: 0, duration: 0.72, ease: "expo.out" }, 18.48);
+      typeAndSend(tl, "s3", 19.15, 20.7, 21.15, 21.62);
+      tl.from(".s3-viz .viz-card", { y: 18, opacity: 0, duration: 0.45, ease: "sine.out" }, 22.35);
+      tl.from(".s3-viz .gantt-bar", { scaleX: 0, duration: 0.65, stagger: 0.09, ease: "power3.out" }, 22.55);
+
+      tl.to("#wipe-3", { x: "230%", duration: 0.9, ease: "power3.inOut" }, 29.6);
+
+      tl.from(".s4-window", { x: -52, opacity: 0, duration: 0.72, ease: "power3.out" }, 30.3);
+      tl.from(".s4-copy", { y: 42, opacity: 0, duration: 0.66, ease: "circ.out" }, 30.55);
+      typeAndSend(tl, "s4", 31.05, 32.65, 33.1, 33.48);
+      tl.from(".s4-tools", { y: 12, opacity: 0, duration: 0.34, ease: "sine.out" }, 33.35);
+      tl.from(".s4-viz .viz-card", { y: 18, opacity: 0, duration: 0.45, ease: "sine.out" }, 34.25);
+
+      tl.to("#wipe-4", { x: "230%", duration: 0.9, ease: "power3.inOut" }, 41.6);
+
+      tl.from(".s5-copy", { x: -42, opacity: 0, duration: 0.66, ease: "power3.out" }, 42.35);
+      tl.from(".s5-window", { x: 52, opacity: 0, duration: 0.72, ease: "expo.out" }, 42.48);
+      typeAndSend(tl, "s5", 43.1, 44.78, 45.25, 45.72);
+      tl.from(".s5-viz .viz-card", { y: 18, opacity: 0, duration: 0.45, stagger: 0.12, ease: "sine.out" }, 46.45);
+      tl.from(".s5-bars .bar", { scaleY: 0, duration: 0.65, stagger: 0.08, ease: "power3.out" }, 46.65);
+
+      tl.to("#wipe-5", { x: "230%", duration: 0.9, ease: "power3.inOut" }, 53.6);
+
+      tl.from(".s6-window", { x: -52, opacity: 0, duration: 0.72, ease: "power3.out" }, 54.3);
+      tl.from(".s6-copy", { y: 42, opacity: 0, duration: 0.66, ease: "circ.out" }, 54.55);
+      typeAndSend(tl, "s6", 55.1, 56.72, 57.18, 57.65);
+      tl.from(".s6-viz .viz-card", { y: 18, opacity: 0, duration: 0.45, ease: "sine.out" }, 58.35);
+      tl.from(".s6-viz .gantt-bar", { scaleX: 0, duration: 0.65, stagger: 0.09, ease: "power3.out" }, 58.55);
+
+      tl.to("#wipe-6", { x: "230%", duration: 0.9, ease: "power3.inOut" }, 65.6);
+
+      tl.from(".s7-in", { y: 48, opacity: 0, duration: 0.72, stagger: 0.15, ease: "power3.out" }, 66.35);
+      tl.from(".s7-item", { x: -46, opacity: 0, duration: 0.54, stagger: 0.11, ease: "expo.out" }, 67.12);
+      tl.to(".s7-in, .s7-item", { opacity: 0, y: -20, duration: 0.7, stagger: 0.04, ease: "power2.in" }, 72.65);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

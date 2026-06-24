@@ -1,0 +1,19 @@
+.DS_Store
+
+# Local dependencies and tool caches
+node_modules/
+.cache/
+
+# Environment and local secrets
+.env
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# HyperFrames generated intermediates. Keep final exported videos next to projects.
+**/renders/
+**/frame-checks/

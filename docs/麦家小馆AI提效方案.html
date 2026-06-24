@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>麦家小馆 AI 提效方案</title>
+  <style>
+    :root {
+      --bg: #f6f2ea;
+      --paper: #fffaf0;
+      --ink: #221f1a;
+      --muted: #716a5f;
+      --line: #e4d8c5;
+      --red: #b83a2e;
+      --red-dark: #7d241e;
+      --green: #206b55;
+      --gold: #c8892f;
+      --blue: #2f5f87;
+      --shadow: 0 18px 50px rgba(64, 42, 20, .12);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(184, 58, 46, .10), transparent 30%),
+        linear-gradient(135deg, #fbf6eb 0%, #f4efe5 42%, #f8f1e4 100%);
+      line-height: 1.65;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .32;
+      background-image:
+        linear-gradient(rgba(70, 50, 28, .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(70, 50, 28, .04) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), rgba(0,0,0,.2));
+    }
+
+    a { color: inherit; }
+    .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+
+    .hero {
+      min-height: 92vh;
+      display: grid;
+      align-items: center;
+      padding: 56px 0 32px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
+      gap: 32px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--red-dark);
+      font-weight: 800;
+      letter-spacing: 0;
+      margin-bottom: 18px;
+    }
+    .eyebrow .mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--red);
+      color: white;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 24px rgba(184, 58, 46, .24);
+    }
+
+    h1 {
+      font-size: clamp(38px, 6vw, 76px);
+      line-height: 1.02;
+      letter-spacing: 0;
+      margin: 0 0 20px;
+    }
+
+    .lead {
+      font-size: clamp(18px, 2vw, 24px);
+      color: #4e473d;
+      max-width: 780px;
+      margin: 0 0 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn.primary { background: var(--red); color: #fff; box-shadow: 0 14px 30px rgba(184, 58, 46, .25); }
+    .btn.secondary { background: rgba(255,255,255,.78); color: var(--ink); border: 1px solid var(--line); }
+
+    .hero-card {
+      background: rgba(255,250,240,.88);
+      border: 1px solid rgba(228,216,197,.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(14px);
+    }
+    .hero-visual {
+      min-height: 380px;
+      padding: 24px;
+      background:
+        linear-gradient(140deg, rgba(34,31,26,.92), rgba(80,45,35,.9)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='520' viewBox='0 0 800 520'%3E%3Cg fill='none' stroke='%23f2d7a3' stroke-opacity='.18'%3E%3Cpath d='M60 100h680M60 190h680M60 280h680M60 370h680M160 45v430M320 45v430M480 45v430M640 45v430'/%3E%3C/g%3E%3Cg fill='%23f2d7a3' fill-opacity='.16'%3E%3Ccircle cx='180' cy='160' r='72'/%3E%3Ccircle cx='570' cy='300' r='92'/%3E%3C/g%3E%3C/svg%3E");
+      color: #fff8e9;
+      display: grid;
+      align-content: space-between;
+      gap: 28px;
+    }
+    .visual-title {
+      font-size: 15px;
+      color: #eacb92;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .flow-mini {
+      display: grid;
+      gap: 12px;
+    }
+    .flow-node {
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      animation: floatIn .7s ease both;
+    }
+    .flow-node:nth-child(2) { animation-delay: .08s; }
+    .flow-node:nth-child(3) { animation-delay: .16s; }
+    .flow-node:nth-child(4) { animation-delay: .24s; }
+    .flow-node strong { display: block; font-size: 17px; margin-bottom: 4px; }
+    .flow-node span { color: #e4d9c8; font-size: 13px; }
+
+    .hero-routes {
+      display: grid;
+      gap: 14px;
+    }
+    .hero-route {
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: var(--radius);
+      padding: 18px;
+      animation: floatIn .7s ease both;
+    }
+    .hero-route.secondary {
+      background: rgba(255,255,255,.06);
+    }
+    .hero-route .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #eacb92;
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .hero-route h2 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.15;
+    }
+    .hero-route p {
+      margin: 0;
+      color: #e4d9c8;
+      font-size: 14px;
+    }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: -58px;
+      position: relative;
+      z-index: 2;
+    }
+    .stat {
+      background: rgba(255,250,240,.94);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 12px 30px rgba(66,42,18,.08);
+    }
+    .stat b { font-size: 32px; line-height: 1; display: block; color: var(--red-dark); }
+    .stat span { color: var(--muted); font-size: 13px; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+      background: rgba(246,242,234,.82);
+      border-bottom: 1px solid rgba(228,216,197,.85);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 0;
+    }
+    .brand { font-weight: 900; color: var(--red-dark); }
+    .nav-links { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+      color: #51483c;
+      padding: 8px 10px;
+      border-radius: 999px;
+    }
+    .nav-links a:hover { background: rgba(184,58,46,.09); color: var(--red-dark); }
+
+    main { padding: 64px 0 96px; }
+    section { scroll-margin-top: 128px; }
+    #recommend {
+      margin-top: 96px;
+      scroll-margin-top: 136px;
+    }
+    #needs {
+      scroll-margin-top: 136px;
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: end;
+      margin: 0 0 22px;
+    }
+    .section-head h2 {
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.08;
+      margin: 0;
+      letter-spacing: 0;
+    }
+    .section-head p { max-width: 620px; margin: 0; color: var(--muted); }
+
+    .recommend {
+      background: #231f19;
+      color: #fff7e7;
+      border-radius: var(--radius);
+      padding: 28px;
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 24px;
+      box-shadow: var(--shadow);
+    }
+    .recommend h3 { margin: 0 0 12px; font-size: 28px; }
+    .recommend p { color: #e2d2bd; margin: 0; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .pill {
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #f5dfb5;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .card {
+      background: rgba(255,250,240,.9);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 12px 28px rgba(69,43,17,.07);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 18px 38px rgba(69,43,17,.10); }
+    .card .tag { color: var(--red-dark); font-size: 12px; font-weight: 900; }
+    .card h3 { margin: 8px 0 8px; font-size: 20px; line-height: 1.25; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .accordion-list { display: grid; gap: 12px; }
+    details {
+      background: rgba(255,250,240,.92);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(69,43,17,.06);
+    }
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+    }
+    summary::-webkit-details-marker { display: none; }
+    .summary-title { font-weight: 900; font-size: 18px; }
+    .summary-desc { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .chev {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      background: rgba(184,58,46,.10);
+      color: var(--red-dark);
+      transition: transform .22s ease;
+    }
+    details[open] .chev { transform: rotate(45deg); }
+    .detail-body {
+      padding: 0 20px 20px;
+      animation: reveal .24s ease both;
+    }
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--red-dark); font-size: 13px; background: rgba(184,58,46,.06); }
+    tr:last-child td { border-bottom: 0; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(255,255,255,.45); }
+
+    .flow {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: stretch;
+      margin: 14px 0;
+    }
+    .step {
+      flex: 1 1 150px;
+      min-height: 86px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: #fffdf7;
+      position: relative;
+    }
+    .step::after {
+      content: "→";
+      position: absolute;
+      right: -13px;
+      top: 30px;
+      color: var(--gold);
+      font-weight: 900;
+    }
+    .step:last-child::after { display: none; }
+    .step b { display: block; color: var(--red-dark); margin-bottom: 4px; }
+    .step span { color: var(--muted); font-size: 13px; }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .filter-btn {
+      border: 1px solid var(--line);
+      background: rgba(255,250,240,.9);
+      border-radius: 999px;
+      padding: 9px 12px;
+      cursor: pointer;
+      font-weight: 800;
+      color: #51483c;
+    }
+    .filter-btn.active { background: var(--red); border-color: var(--red); color: white; }
+    .search {
+      min-width: 240px;
+      flex: 1;
+      border: 1px solid var(--line);
+      background: rgba(255,250,240,.94);
+      border-radius: 999px;
+      padding: 11px 14px;
+      font: inherit;
+      outline: none;
+    }
+
+    .req-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .req {
+      background: rgba(255,250,240,.9);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      min-height: 118px;
+    }
+    .req-top { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+    .code {
+      font-weight: 900;
+      color: var(--red-dark);
+      background: rgba(184,58,46,.10);
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+    .req h4 { margin: 0; font-size: 16px; }
+    .req p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .route {
+      border-radius: var(--radius);
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,240,.92);
+    }
+    .route.highlight {
+      background: #241f19;
+      color: #fff7e7;
+      border-color: #241f19;
+    }
+    .route.highlight p, .route.highlight li { color: #e1d2bf; }
+    .route h3 { margin: 0 0 10px; font-size: 24px; }
+    .route ul { margin: 14px 0 0; padding-left: 20px; }
+    .route li { margin: 8px 0; color: var(--muted); }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+    }
+    .time-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 1.2fr;
+      gap: 12px;
+      align-items: stretch;
+      background: rgba(255,250,240,.9);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+    }
+    .time { font-weight: 900; color: var(--red-dark); }
+    .risk { color: var(--muted); font-size: 14px; }
+
+    .footer {
+      padding: 42px 0 56px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+    }
+
+    .reveal-on-scroll {
+      opacity: 1;
+      transform: none;
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .reveal-on-scroll.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 920px) {
+      .hero-grid, .recommend, .matrix { grid-template-columns: 1fr; }
+      .stats, .cards, .req-grid { grid-template-columns: repeat(2, 1fr); }
+      .section-head { display: block; }
+      .section-head p { margin-top: 10px; }
+      .time-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 24px, 1180px); }
+      .hero { min-height: auto; padding-top: 36px; }
+      .hero-visual { min-height: 300px; }
+      .stats, .cards, .req-grid { grid-template-columns: 1fr; margin-top: 18px; }
+      .nav-inner { align-items: flex-start; flex-direction: column; }
+      main { padding-top: 36px; }
+      .step::after { display: none; }
+      table { min-width: 720px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow"><span class="mark">AI</span><span>麦家小馆经营提效方案</span></div>
+        <h1>两条路线，先快后稳</h1>
+        <p class="lead">这份页面把 AI 提效方案拆成两条主线：方案一用类小龙虾工具和业务 skills 快速见效；方案二建设专用智能体系统，作为更长期的系统化选择。</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#routes">查看两条路线</a>
+          <a class="btn secondary" href="#plan">看方案一</a>
+          <a class="btn secondary" href="#system">看方案二</a>
+          <button class="btn secondary" type="button" id="expandAll">展开全部</button>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-visual">
+          <div>
+            <div class="visual-title">Two Routes</div>
+            <h2 style="margin:10px 0 0;font-size:34px;line-height:1.12;">方案一与方案二<br/>平级比较</h2>
+          </div>
+          <div class="hero-routes">
+            <div class="hero-route">
+              <div class="label">方案一｜优先推荐</div>
+              <h2>类小龙虾工具 + skills</h2>
+              <p>1-2 周可见效，先解决周报、菜单分析、经营诊断、群简报。</p>
+            </div>
+            <div class="hero-route secondary">
+              <div class="label">方案二｜长期建设</div>
+              <h2>专用智能体系统</h2>
+              <p>2-3 个月形成试点，适合在高频流程稳定后再产品化。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap stats">
+    <div class="stat"><b>方案一</b><span>1-2 周可见效</span></div>
+    <div class="stat"><b>方案二</b><span>2-3 个月试点</span></div>
+    <div class="stat"><b>8个</b><span>首批可沉淀 skills</span></div>
+    <div class="stat"><b>需求</b><span>放在页面底部检索</span></div>
+  </div>
+
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand">AI 提效方案</div>
+      <div class="nav-links">
+        <a href="#routes">两条路线</a>
+        <a href="#plan">方案一</a>
+        <a href="#system">方案二</a>
+        <a href="#recommend">推荐</a>
+        <a href="#needs">需求清单</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section id="routes" class="reveal-on-scroll">
+      <div class="section-head">
+        <h2>两条主线</h2>
+        <p>先让领导一眼看明白：这是两个平级方案，不是一个大方案里的零散模块。推荐先做方案一，方案二作为长期系统化方向。</p>
+      </div>
+      <div class="matrix">
+        <div class="route highlight">
+          <h3>方案一：类小龙虾工具 + skills</h3>
+          <p>1-2 周可见效。围绕具体任务沉淀 skill，先把菜单分析、经营诊断、周报、群简报跑起来。</p>
+          <ul>
+            <li>开发快，使用简单。</li>
+            <li>任务窄，输入输出明确，可靠性高。</li>
+            <li>可通过统一资料库逐步系统化。</li>
+          </ul>
+        </div>
+        <div class="route">
+          <h3>方案二：专用智能体系统</h3>
+          <p>最早 2-3 个月形成试点。适合等高频流程稳定后，把成熟流程做成统一系统。</p>
+          <ul>
+            <li>统一门户和权限更完整。</li>
+            <li>建设周期长，对运维和安全要求高。</li>
+            <li>不适合一开始作为主线。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="table-wrap" style="margin-top:16px;">
+        <table>
+          <thead><tr><th>维度</th><th>方案一</th><th>方案二</th></tr></thead>
+          <tbody>
+            <tr><td>见效周期</td><td>1-2 周可见效</td><td>最早 2-3 个月形成试点</td></tr>
+            <tr><td>使用方式</td><td>员工打开类小龙虾工具，调用现成 skill</td><td>员工登录专门网页系统使用</td></tr>
+            <tr><td>开发速度</td><td>快，围绕具体任务沉淀 skill</td><td>慢，需要补齐用户、权限、文件、上线、安全</td></tr>
+            <tr><td>可靠性</td><td>高，任务窄，输入输出明确</td><td>取决于系统完整度，早期不稳定点多</td></tr>
+            <tr><td>数据获取</td><td>员工下载，或智能体模拟人工操作后台</td><td>仍然需要员工下载/上传，或另做代操作流程</td></tr>
+            <tr><td>系统化能力</td><td>可以通过统一资料库和统一资料入口实现</td><td>天然适合做系统，但建设成本高</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="plan" class="reveal-on-scroll" style="margin-top:64px;">
+      <div class="section-head">
+        <h2>方案一：类小龙虾工具 + skills</h2>
+        <p>这是优先推荐的快速落地路线。员工打开类小龙虾工具，调用明确的业务 skill，先解决菜单分析、经营诊断、周报、群简报等高频工作。</p>
+      </div>
+      <div class="recommend">
+        <div>
+          <h3>1-2 周先跑起来</h3>
+          <p>方案一的重点不是先做大系统，而是把具体任务做成稳定流程：下载数据、自动分析、生成报告、统一沉淀。</p>
+          <div class="pill-row">
+            <span class="pill">见效快</span>
+            <span class="pill">任务清楚</span>
+            <span class="pill">员工可学会</span>
+            <span class="pill">可继续系统化</span>
+          </div>
+        </div>
+        <div class="flow">
+          <div class="step"><b>拿到数据</b><span>人工下载或智能体代操作</span></div>
+          <div class="step"><b>业务 skill</b><span>菜单、周报、经营诊断</span></div>
+          <div class="step"><b>输出报告</b><span>图表、趋势、动作建议</span></div>
+          <div class="step"><b>统一沉淀</b><span>资料库和经营规则</span></div>
+        </div>
+      </div>
+      <div class="accordion-list" style="margin-top:16px;">
+        <details open>
+          <summary>
+            <div><div class="summary-title">共同前提：先把数据拿到，再让 AI 分析</div><div class="summary-desc">不能默认系统直接连接第三方平台数据库，现实路径是下载、代操作、统一沉淀。</div></div>
+            <div class="chev">+</div>
+          </summary>
+          <div class="detail-body">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>数据动作</th><th>推荐做法</th></tr></thead>
+                <tbody>
+                  <tr><td>从美团/沃才后台拿经营数据</td><td>员工手动下载，或让智能体在授权电脑上像人一样点击、筛选、下载。</td></tr>
+                  <tr><td>从点评/美团拿顾客评价</td><td>复制、导出、截图，或让智能体代操作。</td></tr>
+                  <tr><td>下载后的处理</td><td>放到统一文件夹或资料库，由 skill 自动清洗、计算、出图、写报告。</td></tr>
+                  <tr><td>账号密码</td><td>不交给公域 AI；需要代操作时，只在授权电脑和受控流程内完成。</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="cards">
+              <div class="card"><span class="tag">自动化重点</span><h3>固化下载路径</h3><p>让员工和智能体知道去哪里下载、下载什么、放到哪里。</p></div>
+              <div class="card"><span class="tag">自动化重点</span><h3>定时同步</h3><p>每天营业结束后，可让智能体批量同步最新美团数据。</p></div>
+              <div class="card"><span class="tag">自动化重点</span><h3>自动出报告</h3><p>由业务 skill 生成报表、图表、趋势图和管理建议。</p></div>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div><div class="summary-title">员工如何使用</div><div class="summary-desc">员工打开工具调用明确 skill，先解决菜单分析、经营诊断、周报、群简报。</div></div>
+            <div class="chev">+</div>
+          </summary>
+          <div class="detail-body">
+            <p><strong>员工体验示例：</strong></p>
+            <div class="table-wrap">
+              <table>
+                <tbody>
+                  <tr><td>/菜单分析</td><td>帮我分析过去三个月的菜品毛利</td></tr>
+                  <tr><td>/经营诊断</td><td>帮我分析过去30天门店经营情况</td></tr>
+                  <tr><td>/老板简报</td><td>生成本周经营一页纸</td></tr>
+                  <tr><td>/群消息简报</td><td>汇总昨天运营群里的待办和风险</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="cards">
+              <div class="card"><span class="tag">已有样板</span><h3>maijia-menu-analyse</h3><p>菜单/菜品毛利分析，输出菜单分析 Excel。</p></div>
+              <div class="card"><span class="tag">已有样板</span><h3>maijia-business-analyse</h3><p>门店经营诊断，输出经营诊断 HTML 报告和可复用数据表。</p></div>
+              <div class="card"><span class="tag">价值</span><h3>从一次分析变成流程</h3><p>把“下载什么、怎么算、输出什么”固化下来。</p></div>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div><div class="summary-title">1-2 周落地节奏</div><div class="summary-desc">先跑通两个标杆 skill，再培训关键员工，形成第一批麦家版报告模板。</div></div>
+            <div class="chev">+</div>
+          </summary>
+          <div class="detail-body">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>时间</th><th>动作</th><th>产出</th></tr></thead>
+                <tbody>
+                  <tr><td>第 1-2 天</td><td>选 2-3 个真实场景：菜单分析、经营诊断、老板简报</td><td>场景清单和样本数据</td></tr>
+                  <tr><td>第 3-4 天</td><td>固化数据下载流程，包括人工下载和智能体代操作两种方式</td><td>下载 SOP、文件夹结构、代操作说明</td></tr>
+                  <tr><td>第 5-7 天</td><td>在类小龙虾工具里跑通两个标杆 skill</td><td>菜单分析报告、经营诊断报告</td></tr>
+                  <tr><td>第 8-10 天</td><td>根据管理层反馈修改报告口径</td><td>麦家版报告模板</td></tr>
+                  <tr><td>第 11-14 天</td><td>培训 3-5 名中高层/运营骨干自己使用</td><td>可复用 skill 使用手册</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div><div class="summary-title">企业微信群信息读取</div><div class="summary-desc">企业微信消息可以成为运营风险简报来源，但需要企业授权、管理员配置和合规边界。</div></div>
+            <div class="chev">+</div>
+          </summary>
+          <div class="detail-body">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>阶段</th><th>做法</th><th>结果</th></tr></thead>
+                <tbody>
+                  <tr><td>半自动阶段</td><td>让智能体在授权电脑上读取企业微信客户端/网页中的群消息，或使用企业微信开放能力接入。</td><td>减少人工复制。</td></tr>
+                  <tr><td>定时同步阶段</td><td>每天固定时间同步群消息，自动识别待办、未回复事项、风险问题。</td><td>形成运营风险简报。</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>企业微信有官方开放能力，例如会话内容存档等能力。使用这类能力通常需要管理员开通、授权和技术配置；是否产生额外费用，以企业当前版本和后台实际提示为准。</p>
+          </div>
+        </details>
+        <details>
+          <summary>
+            <div><div class="summary-title">统一资料库：方案一如何系统化</div><div class="summary-desc">类小龙虾工具不是零散小工具，只要资料统一沉淀，也能长成经营中枢。</div></div>
+            <div class="chev">+</div>
+          </summary>
+          <div class="detail-body">
+            <div class="recommend" style="background:#fffaf0;color:var(--ink);">
+              <div>
+                <h3>统一资料库</h3>
+                <p style="color:var(--muted);">所有下载数据、历史报告、经营规则、培训材料都在统一位置沉淀，智能体可以从这里取资料，也可以把新报告放回来。</p>
+                <div class="pill-row">
+                  <span class="pill" style="color:var(--red-dark);background:rgba(184,58,46,.08);border-color:var(--line);">数据不散落</span>
+                  <span class="pill" style="color:var(--red-dark);background:rgba(184,58,46,.08);border-color:var(--line);">报告可追溯</span>
+                  <span class="pill" style="color:var(--red-dark);background:rgba(184,58,46,.08);border-color:var(--line);">规则可复用</span>
+                </div>
+              </div>
+              <div class="flow">
+                <div class="step"><b>员工工具</b><span>类小龙虾工具、通用智能体</span></div>
+                <div class="step"><b>统一资料入口</b><span>拿资料、交报告</span></div>
+                <div class="step"><b>业务 Skills</b><span>分析、汇总、生成</span></div>
+                <div class="step"><b>经营沉淀</b><span>周报、菜单、群简报、培训</span></div>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="system" class="reveal-on-scroll" style="margin-top:64px;">
+      <div class="section-head">
+        <h2>方案二：专用智能体系统</h2>
+        <p>这是更完整、更统一的企业系统路线。员工通过专门网页登录、上传或同步数据、查看报告；适合在高频流程稳定后再建设。</p>
+      </div>
+      <div class="recommend" style="background:#fffaf0;color:var(--ink);">
+        <div>
+          <h3>企业自己的网页系统</h3>
+          <p style="color:var(--muted);">方案二不是使用员工各自的工具，而是建设一个统一系统：员工登录后上传或同步数据，系统负责分析、权限控制、报告归档和长期维护。</p>
+          <div class="pill-row">
+            <span class="pill" style="color:var(--red-dark);background:rgba(184,58,46,.08);border-color:var(--line);">统一登录</span>
+            <span class="pill" style="color:var(--red-dark);background:rgba(184,58,46,.08);border-color:var(--line);">权限管理</span>
+            <span class="pill" style="color:var(--red-dark);background:rgba(184,58,46,.08);border-color:var(--line);">报告中心</span>
+            <span class="pill" style="color:var(--red-dark);background:rgba(184,58,46,.08);border-color:var(--line);">安全上线</span>
+          </div>
+        </div>
+        <div class="flow">
+          <div class="step"><b>员工登录</b><span>按角色进入系统</span></div>
+          <div class="step"><b>上传/同步数据</b><span>文件、报表、历史资料</span></div>
+          <div class="step"><b>系统分析</b><span>问数、出图、生成报告</span></div>
+          <div class="step"><b>报告中心</b><span>权限、归档、追溯</span></div>
+        </div>
+      </div>
+
+      <div class="accordion-list" style="margin-top:16px;">
+        <details>
+          <summary>
+            <div><div class="summary-title">方案二：专用智能体系统</div><div class="summary-desc">好处是统一规范，问题是建设周期长；适合在高频流程稳定后再产品化。</div></div>
+            <div class="chev">+</div>
+          </summary>
+          <div class="detail-body">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>能力</th><th>企业能理解的含义</th></tr></thead>
+                <tbody>
+                  <tr><td>用户管理</td><td>谁能登录，谁离职后不能再登录，谁是管理员。</td></tr>
+                  <tr><td>权限管理</td><td>老板、区域经理、店长、财务看到的数据范围不同。</td></tr>
+                  <tr><td>文件管理</td><td>上传的文件放在哪里，谁能看，多久过期，能不能追溯。</td></tr>
+                  <tr><td>数据处理</td><td>大文件、坏文件、重复文件都要能处理，不能一出错就卡住。</td></tr>
+                  <tr><td>上线部署</td><td>系统要有稳定网址、服务器、备份、日志和故障处理。</td></tr>
+                  <tr><td>安全合规</td><td>营业额、成本、会员、员工信息不能随意泄露。</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+        <details>
+          <summary>
+            <div><div class="summary-title">专用智能体建设路线</div><div class="summary-desc">现有原型基本可用，但能力边界很窄；每个新增经营功能通常需要单独开发调试。</div></div>
+            <div class="chev">+</div>
+          </summary>
+          <div class="detail-body">
+            <div class="timeline">
+              <div class="time-row"><div class="time">第 1-3 天</div><div>确认现有原型可运行，盘点已有能力和缺口</div><div class="risk">不做会误以为系统已经接近可用，后续预期失控。</div></div>
+              <div class="time-row"><div class="time">第 4-15 天</div><div>补强登录和数据隔离</div><div class="risk">员工可能看到不该看的营业额、成本或其他门店数据。</div></div>
+              <div class="time-row"><div class="time">第 16-30 天</div><div>增加企业、门店、角色</div><div class="risk">所有人权限混在一起，无法按组织结构管理数据。</div></div>
+              <div class="time-row"><div class="time">第 31-60 天</div><div>完善文件存储和后台任务</div><div class="risk">文件散落、丢失；大文件处理时系统卡住。</div></div>
+              <div class="time-row"><div class="time">第 61-95 天</div><div>扩展数据格式、报告模板和员工工作台</div><div class="risk">每来一种新表都临时处理，员工找不到历史报告。</div></div>
+              <div class="time-row"><div class="time">第 96-150 天</div><div>云上部署、小范围试点、安全和运营补强</div><div class="risk">无法稳定多人访问；出问题没人知道、没人负责。</div></div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="recommend" class="reveal-on-scroll">
+      <div class="section-head">
+        <h2>推荐先走方案一</h2>
+        <p>不是先“凑合”，而是先把真实高频工作做成可靠流程。等需求稳定后，再决定是否建设专用智能体系统。</p>
+      </div>
+      <div class="recommend">
+        <div>
+          <h3>类小龙虾工具 + 业务 skills + 统一资料库</h3>
+          <p>这条路线最适合当前阶段：不用等待大系统上线，先把菜单分析、经营诊断、周报、群简报等高频任务稳定跑起来。</p>
+          <div class="pill-row">
+            <span class="pill">见效快</span>
+            <span class="pill">开发轻</span>
+            <span class="pill">能培训员工</span>
+            <span class="pill">可逐步系统化</span>
+          </div>
+        </div>
+        <div class="flow">
+          <div class="step"><b>拿到数据</b><span>人工下载或智能体代操作</span></div>
+          <div class="step"><b>统一存放</b><span>数据、报告、规则不散落</span></div>
+          <div class="step"><b>Skill 分析</b><span>自动清洗、计算、出图</span></div>
+          <div class="step"><b>经营动作</b><span>会前对齐，会上讨论改进</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="needs" class="reveal-on-scroll" style="margin-top:36px;">
+      <div class="section-head">
+        <h2>需求清单</h2>
+        <p>作为附录放在最后，来自会议记录的需求全集。可按分类筛选，也可以搜索关键词。</p>
+      </div>
+      <div class="filters" id="filters"></div>
+      <div class="filters"><input class="search" id="search" placeholder="搜索：例如 周报、菜单、群消息、选址、权限..." /></div>
+      <div class="req-grid" id="reqGrid"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">基于《会议需求完整清单》和《AI 提效落地方案》整理。建议分享时从“推荐路线”和“未来 30 天建议行动”开始讲。</div>
+  </footer>
+
+  <script>
+    const groups = [
+      { key: "经营数据", color: "red", items: [
+        ["D01", "自然语言查经营数据", "管理层可以直接问：保利店最近一周销售趋势怎么样？本月堂食和外卖哪个更好？"],
+        ["D02", "支持多层级查询", "支持总公司、区域、门店、档口/部门、菜品等不同颗粒度。"],
+        ["D03", "支持多时间维度", "支持日、周、月、指定时间段、去年同期、上周/上月环比等。"],
+        ["D04", "经营总览", "一眼看到公司或门店的综合经营情况，而不是一堆零散数字。"],
+        ["D05", "趋势图展示", "用图展示销售趋势、堂食/外卖趋势、档口趋势、菜品趋势。"],
+        ["D06", "向下穿透分析", "从公司看到区域，从区域看到门店，从门店看到菜品。"],
+        ["D07", "多门店对比", "比较不同门店的销售、客流、客单价、满意度、复购、新客占比等。"],
+        ["D08", "同比/环比分析", "和去年同期、上周、上月等进行对比。"],
+        ["D09", "加工后的日报/周报", "不再让员工手抄静态数字，而是展示趋势、异常、评价和建议。"],
+        ["D10", "自动生成上周简报", "开会前所有人看到同一份数据，把会议时间留给解释原因和确定动作。"],
+        ["D11", "异常提醒", "销售额、客流、菜品销量出现明显变化时主动提醒。"],
+        ["D12", "数据背后的业务解释", "AI 不只说高了低了，还要知道数字对应的经营动作。"],
+        ["D13", "经营原因线索", "帮助管理层从数据里找可能原因，但最终由人确认。"],
+        ["D14", "经营动作建议", "根据数据建议菜单调整、人员跟进、促销复盘、订货调整等动作。"]
+      ]},
+      { key: "数据来源", items: [
+        ["S01", "美团收银数据获取", "销售额、订单、堂食/外卖、菜品等数据；优先通过人工导出或智能体代操作后台获取。"],
+        ["S02", "沃才/供应链数据获取", "原材料、订货、验收、库存、成本等；不默认有开放接口。"],
+        ["S03", "会员消费数据获取", "会员消费、复购、新老客等；注意脱敏和权限。"],
+        ["S04", "评价获取", "美团/大众点评好评、差评、口味、服务、环境、食材等分类。"],
+        ["S05", "成本数据整理", "菜品成本、门店成本、毛利等，先从导出文件和内部表格整理。"],
+        ["S06", "能耗数据整理", "水电燃气等经营能耗，优先从账单、表格、截图等资料整理。"],
+        ["S07", "人效数据整理", "人员效率、人力成本、排班相关指标。"],
+        ["S08", "宿舍管理数据查询", "可查询宿舍管理等内部数据。"],
+        ["S09", "历史特殊事件记录", "闭店、装修、摆大排档、特殊促销等，需要被系统记住。"],
+        ["S10", "节假日/天气信息", "可用于订货、预测和复盘，但展示口径要谨慎。"],
+        ["S11", "数据下载流程", "员工按固定路径下载，或让通用智能体模拟人工操作。"],
+        ["S12", "本地资料库", "让 AI 每次需要数据时去本地找，而不是指望模型自己记住。"]
+      ]},
+      { key: "会议汇报", items: [
+        ["M01", "会前数据自动对齐", "会前所有管理人员看到同一份图和结论。"],
+        ["M02", "开会不再念数据", "员工不用在会上口头汇报一堆数字，只解释原因和行动。"],
+        ["M03", "管理层精力转向改进", "会议重点从发生了什么转向为什么和怎么改。"],
+        ["M04", "自动生成汇报材料", "周报、月报、复盘、图表和简要解释自动生成。"],
+        ["M05", "会议纪要自动整理", "会议录音/文字自动变成纪要、待办、结论。"],
+        ["M06", "高管经验沉淀", "把反复讲的经营理念沉淀成课件、案例、知识库。"],
+        ["M07", "可搜索会议知识库", "输入关键词即可找到谁在什么时候说过什么。"],
+        ["M08", "缩短会议时间", "通过提前整理数据和材料，减少重复讲解。"]
+      ]},
+      { key: "菜单顾客", items: [
+        ["P01", "5A 菜单自动分析", "根据销量、毛利、评价等规则自动形成菜品分类和调整建议。"],
+        ["P02", "菜品好坏定量判断", "不靠感觉好卖，而是用销量、周期、门店对比等数据判断。"],
+        ["P03", "菜品结构优化", "找出明星菜、引流菜、低效菜、需改进菜。"],
+        ["P04", "顾客评价分类", "把差评分成服务、口味、食材、环境等类型。"],
+        ["P05", "好评/差评趋势", "看某个门店、区域、公司整体的评价变化。"],
+        ["P06", "菜品与评价关联", "识别哪些菜品经常被夸、哪些菜品经常被投诉。"],
+        ["P07", "点餐助手", "顾客通过自然对话获得推荐，提高点餐成功率。"],
+        ["P08", "组合推荐", "结合优惠、人数、口味和餐厅利益做菜品组合推荐。"],
+        ["P09", "上菜顺序优化", "根据菜品、桌台和后厨节奏安排更合理的上菜顺序。"],
+        ["P10", "顾客反馈处理", "就餐后反馈自动收集、分类、提醒门店处理。"]
+      ]},
+      { key: "门店运营", items: [
+        ["O01", "出品管理", "通过软件或 AI 指导员工操作、检查结果。"],
+        ["O02", "服务管理", "识别服务问题，沉淀标准话术和处理流程。"],
+        ["O03", "卫生管理", "对门店卫生检查进行记录、提醒和结果追踪。"],
+        ["O04", "供应链验收", "通过图片、摄像头等判断原材料数量和质量。"],
+        ["O05", "物资供应管理", "原材料、一次性用品等物资的供应和验收。"],
+        ["O06", "销售预测", "根据历史数据和多种因素预测销售额。"],
+        ["O07", "出品预测", "根据销售预测推算菜品需求。"],
+        ["O08", "订货/物料预测", "根据菜品预测推算原材料需求。"],
+        ["O09", "成本分析", "供应链、菜品、门店成本分析。"],
+        ["O10", "审批流程自动化", "常规审批按制度自动处理，特殊情况人工处理。"],
+        ["O11", "绩效数据自动统计", "群消息、日报、任务完成情况可进入绩效参考。"]
+      ]},
+      { key: "群消息", items: [
+        ["G01", "群消息自动查看", "多个门店群、运营群的信息由 AI 帮忙看。"],
+        ["G02", "每日群简报", "总结当天各群发生了什么、哪些重要、哪些紧急。"],
+        ["G03", "任务识别", "从群消息中识别谁需要做什么。"],
+        ["G04", "未回复提醒", "某件事没人回复时，自动提醒负责人。"],
+        ["G05", "转办负责人", "把问题转给对应负责人处理。"],
+        ["G06", "超时升级", "一直没人处理时提醒上级。"],
+        ["G07", "语气/紧急程度判断", "通过消息内容和语气判断紧急程度。"],
+        ["G08", "任务完成统计", "自动统计日报、抖音任务等有没有完成。"]
+      ]},
+      { key: "市场选址安全", items: [
+        ["A01", "促销活动复盘", "推广通、抖音等活动之后复盘效果。"],
+        ["A02", "抖音引流分析", "分析抖音内容、团购、门店引流效果。"],
+        ["A03", "新品/季节产品建议", "根据数据和市场趋势辅助推出新品。"],
+        ["A04", "品牌故事内容生成", "把创业故事、品牌理念转化为海报、PPT、门店物料。"],
+        ["L01", "选址分析工具", "形成可用版本，辅助新店选址。"],
+        ["L02", "地铁沿线优先", "会议中提到优先考虑地铁站沿线。"],
+        ["L03", "竞争对手分析", "看周边是否有主要竞争对手。"],
+        ["L04", "人群数据分析", "看周边客群结构、人流、消费能力。"],
+        ["T01", "私有部署/私域 AI", "经营数据不能随便放到公域模型里。"],
+        ["T02", "数据保密", "营业额、成本、会员、供应链等内部数据需保护。"],
+        ["T08", "员工 AI 使用培训", "教大家怎样提问、怎样给背景、怎样检查答案。"]
+      ]}
+    ];
+
+    const filters = document.getElementById("filters");
+    const grid = document.getElementById("reqGrid");
+    const search = document.getElementById("search");
+    let active = "全部";
+
+    function renderFilters() {
+      const names = ["全部", ...groups.map(g => g.key)];
+      filters.innerHTML = names.map(name => `<button class="filter-btn ${name === active ? "active" : ""}" data-filter="${name}">${name}</button>`).join("");
+      filters.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => {
+        active = btn.dataset.filter;
+        renderFilters();
+        renderReqs();
+      }));
+    }
+
+    function renderReqs() {
+      const q = search.value.trim().toLowerCase();
+      const rows = groups
+        .filter(g => active === "全部" || g.key === active)
+        .flatMap(g => g.items.map(item => ({ group: g.key, item })))
+        .filter(({ group, item }) => {
+          const blob = [group, ...item].join(" ").toLowerCase();
+          return !q || blob.includes(q);
+        });
+
+      grid.innerHTML = rows.map(({ group, item }) => `
+        <article class="req">
+          <div class="req-top"><span class="code">${item[0]}</span><span class="code" style="background:rgba(32,107,85,.1);color:var(--green);">${group}</span></div>
+          <h4>${item[1]}</h4>
+          <p>${item[2]}</p>
+        </article>
+      `).join("");
+    }
+
+    renderFilters();
+    renderReqs();
+    search.addEventListener("input", renderReqs);
+
+    document.getElementById("expandAll").addEventListener("click", () => {
+      document.querySelectorAll("details").forEach(d => d.open = true);
+      location.hash = "#plan";
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add("visible");
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal-on-scroll").forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
