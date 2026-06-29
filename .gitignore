@@ -3,16 +3,25 @@
 # Local dependencies and tool caches
 node_modules/
 .cache/
+.tts-venv/
 
 # Environment and local secrets
 .env
 .env.*
 !.env.example
+tts.txt
+**/tts.txt
 
 # Logs and temporary files
 *.log
+*.aiff
 tmp/
 temp/
+**/assets/narration-qwen.wav
+**/assets/narration-qwen-part-*.wav
+**/assets/narration-qwen-parts.txt
+**/assets/narration.wav
+**/assets/narration-scene-*-raw.wav
 
 # HyperFrames generated intermediates. Keep final exported videos next to projects.
 **/renders/

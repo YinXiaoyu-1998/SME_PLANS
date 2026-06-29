@@ -1,0 +1,86 @@
+[
+  {
+    "id": "01",
+    "title": "开场",
+    "start": 0.45,
+    "max": 5.35,
+    "raw_duration": 6.32,
+    "duration": 5.352,
+    "speed_ratio": 1.181,
+    "text": "企业资料中枢，就是把数据、报告和经验放在一起，让智能体随时取用。",
+    "file": "narration-scene-01.wav",
+    "request_id": "f1f03fbe-fd5e-9de3-bf47-316ea2db476f"
+  },
+  {
+    "id": "02",
+    "title": "老板每日看板",
+    "start": 7.05,
+    "max": 10.1,
+    "raw_duration": 7.2,
+    "duration": 7.2,
+    "speed_ratio": 1.0,
+    "text": "老板李杰不用每天追问。设好每日任务，早上自动看到异常门店、原因和跟进人。",
+    "file": "narration-scene-02.wav",
+    "request_id": "6334521a-d310-9ea5-ab72-e6ff135896e4"
+  },
+  {
+    "id": "03",
+    "title": "运营会准备",
+    "start": 18.65,
+    "max": 10.35,
+    "raw_duration": 7.76,
+    "duration": 7.76,
+    "speed_ratio": 1.0,
+    "text": "运营负责人殷彤开会前，点名企业资料中枢，就能把差评、活动、门店事件和负责人整理成议题。",
+    "file": "narration-scene-03.wav",
+    "request_id": "5423d505-072f-9aa7-afa2-d13e390f8ea8"
+  },
+  {
+    "id": "04",
+    "title": "门店现场沉淀",
+    "start": 30.65,
+    "max": 10.35,
+    "raw_duration": 9.36,
+    "duration": 9.36,
+    "speed_ratio": 1.0,
+    "text": "店长张大岗遇到出餐慢、差评、临时缺货，可以当天沉淀成经营事件。以后复盘，数据背后的现场事实也能看见。",
+    "file": "narration-scene-04.wav",
+    "request_id": "cb37924e-0aac-9004-961f-6a48f25263ca"
+  },
+  {
+    "id": "05",
+    "title": "财务对账",
+    "start": 42.65,
+    "max": 10.35,
+    "raw_duration": 10.0,
+    "duration": 10.0,
+    "speed_ratio": 1.0,
+    "text": "会计鲁肃做对账，不用在导出表、验收单和 Excel 之间来回找。智能体先列差异，再标出要补的凭证。",
+    "file": "narration-scene-05.wav",
+    "request_id": "ef3ab7ee-2723-9ca3-ac9c-dd3ca7e0f381"
+  },
+  {
+    "id": "06",
+    "title": "新人值班",
+    "start": 54.65,
+    "max": 10.35,
+    "raw_duration": 7.28,
+    "duration": 7.28,
+    "speed_ratio": 1.0,
+    "text": "新员工田亮第一次值班，也能直接问：开店怎么做，差评怎么回，有没有类似案例。",
+    "file": "narration-scene-06.wav",
+    "request_id": "a46467a4-e7c8-9f0d-b980-7c11ac5021bc"
+  },
+  {
+    "id": "07",
+    "title": "收束",
+    "start": 66.65,
+    "max": 6.25,
+    "raw_duration": 5.6,
+    "duration": 5.6,
+    "speed_ratio": 1.0,
+    "text": "它不是多一个后台，而是让资料和经验，被每个员工自己的智能体用起来。",
+    "file": "narration-scene-07.wav",
+    "request_id": "607af666-4188-99ee-9e65-d602e74189fc"
+  }
+]
